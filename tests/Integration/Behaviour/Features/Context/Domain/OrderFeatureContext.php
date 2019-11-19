@@ -43,6 +43,7 @@ use Product;
 class OrderFeatureContext extends AbstractDomainFeatureContext
 {
     const UPDATE_STATUS = "Update status";
+    const SUCCESS_MESSAGE = "";
 
     /** @var string */
     private $output;
@@ -196,8 +197,11 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
      */
     public function iShouldSee(string $message)
     {
+        // todo: while BulkChangeOrderStatusCommand is not logging anything anywhere this test looses some meaning
+        // todo: if logging would be implemented this test could be more meaningful - SUCCESS_MESSAGE may not be empty
+        // todo: output could be from the last line of log file: $string = exec( 'tail -n 10 /you/file/full/path/here');
         if (strpos($this->output, $message) === false) {
-            throw new Exception(sprintf('Did not see "%s" in the output "%s"', $message, $this->output));
+            throw new Exception(sprintf('Did not see "%s" in the output "%s"', self::SUCCESS_MESSAGE, $this->output));
         }
     }
 }
