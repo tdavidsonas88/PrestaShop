@@ -13,6 +13,6 @@ Feature: Orders statuses from Back Office
 #    And I click "Change Order Status"
 #    And I choose "Awaiting Cash On Delivery validation"
     And I press "Update status"
-#    Then I should see "Successful update."
+    Then I should see "Successful update."
 
 
