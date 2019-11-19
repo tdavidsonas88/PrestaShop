@@ -38,6 +38,9 @@ use Product;
 
 class OrderFeatureContext extends AbstractDomainFeatureContext
 {
+    /** @var string */
+    private $output;
+
     /**
      * @When I add order :orderReference from cart :cartReference with :paymentModuleName payment method and :orderStatus order status
      */
@@ -171,9 +174,12 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
 
     /**
      * @Then I should see :message
+     * @throws \Exception
      */
     public function iShouldSee(string $message)
     {
-        throw new PendingException();
+        if (strpos($this->output, $message) === false) {
+            throw new \Exception(sprintf('Did not see "%s" in the output "%s"', $message, $this->output));
+        }
     }
 }
