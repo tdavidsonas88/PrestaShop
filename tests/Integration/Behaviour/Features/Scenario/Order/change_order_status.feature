@@ -7,8 +7,8 @@ Feature: Orders statuses from Back Office
   Scenario: Change status of multiple orders
     Given there are 2 orders with Status "Awaiting bank wire payment"
     And I am on "/admin-dev/index.php/sell/orders/orders"
-    When I select first checkbox on the Orders table
-    And I select second checkbox on the Orders table
+    When I select first checkbox on the Orders table with status "Awaiting bank wire payment"
+    And I select second checkbox on the Orders table with status "Awaiting bank wire payment"
     And I click "Bulk actions"
     And I click "Change Order Status"
     And I choose "Awaiting Cash On Delivery validation"

@@ -113,65 +113,66 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
     }
 
     /**
-     * @Given there are :arg2 orders with Status :arg1
+     * @Given there are :countOfOrders orders with Status :currentState
      */
-    public function thereAreOrdersWithStatus($arg1, $arg2)
+    public function thereAreOrdersWithStatus(int $countOfOrders, int $currentState)
     {
         throw new PendingException();
     }
 
     /**
-     * @Given I am on :arg1
+     * @Given I am on :url
      */
-    public function iAmOn($arg1)
+    public function iAmOn(string $url)
     {
         throw new PendingException();
     }
 
     /**
-     * @When I select first checkbox on the Orders table
+     * @When I select first checkbox on the Orders table with status :currentState
      */
-    public function iSelectFirstCheckboxOnTheOrdersTable()
+    public function iSelectFirstCheckboxOnTheOrdersTableWithStatus(int $currentState)
     {
         throw new PendingException();
     }
 
     /**
-     * @When I select second checkbox on the Orders table
+     * @When I select second checkbox on the Orders table with status :currentState
      */
-    public function iSelectSecondCheckboxOnTheOrdersTable()
+    public function iSelectSecondCheckboxOnTheOrdersTableWithStatus(int $currentState)
+    {
+        throw new PendingException();
+    }
+
+
+    /**
+     * @When I click :identifier
+     */
+    public function iClick(string $identifier)
     {
         throw new PendingException();
     }
 
     /**
-     * @When I click :arg1
+     * @When I choose :identifier
      */
-    public function iClick($arg1)
+    public function iChoose(string $identifier)
     {
         throw new PendingException();
     }
 
     /**
-     * @When I choose :arg1
+     * @When I press :identifier
      */
-    public function iChoose($arg1)
+    public function iPress(string $identifier)
     {
         throw new PendingException();
     }
 
     /**
-     * @When I press :arg1
+     * @Then I should see :message
      */
-    public function iPress($arg1)
-    {
-        throw new PendingException();
-    }
-
-    /**
-     * @Then I should see :arg1
-     */
-    public function iShouldSee($arg1)
+    public function iShouldSee(string $message)
     {
         throw new PendingException();
     }
