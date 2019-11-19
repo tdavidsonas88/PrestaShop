@@ -111,4 +111,68 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
             new GenerateInvoiceCommand((int) $order->id)
         );
     }
+
+    /**
+     * @Given there are :arg2 orders with Status :arg1
+     */
+    public function thereAreOrdersWithStatus($arg1, $arg2)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given I am on :arg1
+     */
+    public function iAmOn($arg1)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @When I select first checkbox on the Orders table
+     */
+    public function iSelectFirstCheckboxOnTheOrdersTable()
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @When I select second checkbox on the Orders table
+     */
+    public function iSelectSecondCheckboxOnTheOrdersTable()
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @When I click :arg1
+     */
+    public function iClick($arg1)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @When I choose :arg1
+     */
+    public function iChoose($arg1)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @When I press :arg1
+     */
+    public function iPress($arg1)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Then I should see :arg1
+     */
+    public function iShouldSee($arg1)
+    {
+        throw new PendingException();
+    }
 }
