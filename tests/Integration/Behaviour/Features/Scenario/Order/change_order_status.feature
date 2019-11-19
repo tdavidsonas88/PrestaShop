@@ -1,8 +1,6 @@
 @reset-database-before-feature
-Feature: Change Orders statuses from Back Office
-  PrestaShop allows BO users to change statuses of multiple orders in the SELL > Orders page by selecting checkboxes
-  in the orders table and selecting
-  Bulk actions dropdown -> Change Order Status -> select status from Choose an order status dropdown -> Update status
+Feature: Orders statuses from Back Office
+  In order to change statuses of multiple orders
+  As a Back Office (BO) user
+  I need to be able to select multiple orders on the Orders page, then Change Order Status by choosing status from list
 
-  As a BO user
-  I must be able to change status of multiple orders
