@@ -47,6 +47,7 @@ class BulkChangeOrderStatusCommand
     /**
      * @param int[] $orderIds
      * @param int $newOrderStatusId
+     * @throws OrderException
      */
     public function __construct(array $orderIds, $newOrderStatusId)
     {
@@ -81,6 +82,7 @@ class BulkChangeOrderStatusCommand
 
     /**
      * @param int[] $orderIds
+     * @throws OrderException
      */
     private function setOrderIds(array $orderIds)
     {

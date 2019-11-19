@@ -38,6 +38,8 @@ use PrestaShop\PrestaShop\Core\Domain\Order\Exception\ChangeOrderStatusException
 use PrestaShop\PrestaShop\Core\Domain\Order\Exception\OrderException;
 use PrestaShop\PrestaShop\Core\Domain\Order\Exception\OrderNotFoundException;
 use PrestaShop\PrestaShop\Core\Domain\Order\ValueObject\OrderId;
+use PrestaShopDatabaseException;
+use PrestaShopException;
 use StockAvailable;
 
 /**
@@ -47,6 +49,11 @@ final class BulkChangeOrderStatusHandler implements BulkChangeOrderStatusHandler
 {
     /**
      * @param BulkChangeOrderStatusCommand $command
+     * @throws ChangeOrderStatusException
+     * @throws OrderException
+     * @throws OrderNotFoundException
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
      */
     public function handle(BulkChangeOrderStatusCommand $command)
     {

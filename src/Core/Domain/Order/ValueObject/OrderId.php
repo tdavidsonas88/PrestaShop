@@ -60,6 +60,7 @@ class OrderId
 
     /**
      * @param int $orderId
+     * @throws OrderException
      */
     private function assertIntegerIsGreaterThanZero($orderId)
     {

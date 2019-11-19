@@ -26,10 +26,14 @@
 
 namespace Tests\Integration\Behaviour\Features\Context\Domain;
 
+use Behat\Behat\Tester\Exception\PendingException;
 use Context;
+use Exception;
 use Order;
 use OrderState;
 use PrestaShop\PrestaShop\Core\Domain\Order\Command\AddOrderFromBackOfficeCommand;
+use PrestaShop\PrestaShop\Core\Domain\Order\Command\BulkChangeOrderStatusCommand;
+use PrestaShop\PrestaShop\Core\Domain\Order\Exception\OrderException;
 use PrestaShop\PrestaShop\Core\Domain\Order\Product\Command\AddProductToOrderCommand;
 use PrestaShop\PrestaShop\Core\Domain\Order\ValueObject\OrderId;
 use Tests\Integration\Behaviour\Features\Context\SharedStorage;
@@ -38,6 +42,8 @@ use Product;
 
 class OrderFeatureContext extends AbstractDomainFeatureContext
 {
+    const UPDATE_STATUS = "Update status";
+
     /** @var string */
     private $output;
 
@@ -116,9 +122,10 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
     }
 
     /**
-     * @Given there are :countOfOrders orders with Status :currentState
+     * @Given there are :countOfOrders orders with Status :currentStateId
+     * @throws OrderException
      */
-    public function thereAreOrdersWithStatus(int $countOfOrders, int $currentState)
+    public function thereAreOrdersWithStatus(int $countOfOrders, int $currentStateId)
     {
         throw new PendingException();
     }
@@ -166,20 +173,31 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
 
     /**
      * @When I press :identifier
+     * @throws OrderException
      */
     public function iPress(string $identifier)
     {
-        throw new PendingException();
+        // todo: find orders with status $currentStateId from the test db
+        $orderIds = [1, 2];
+        $newStateId = 13;
+
+        switch ($identifier) {
+            case self::UPDATE_STATUS:
+                $this->getCommandBus()->handle(new BulkChangeOrderStatusCommand($orderIds, $newStateId));
+                break;
+            default:
+                throw new PendingException();
+        }
     }
 
     /**
      * @Then I should see :message
-     * @throws \Exception
+     * @throws Exception
      */
     public function iShouldSee(string $message)
     {
         if (strpos($this->output, $message) === false) {
-            throw new \Exception(sprintf('Did not see "%s" in the output "%s"', $message, $this->output));
+            throw new Exception(sprintf('Did not see "%s" in the output "%s"', $message, $this->output));
         }
     }
 }
