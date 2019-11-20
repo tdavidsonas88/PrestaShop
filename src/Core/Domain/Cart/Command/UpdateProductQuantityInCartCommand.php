@@ -27,6 +27,7 @@
 namespace PrestaShop\PrestaShop\Core\Domain\Cart\Command;
 
 use PrestaShop\PrestaShop\Core\Domain\Cart\Exception\CartConstraintException;
+use PrestaShop\PrestaShop\Core\Domain\Cart\Exception\CartException;
 use PrestaShop\PrestaShop\Core\Domain\Cart\ValueObject\CartId;
 use PrestaShop\PrestaShop\Core\Domain\Cart\ValueObject\QuantityAction;
 use PrestaShop\PrestaShop\Core\Domain\Product\ValueObject\ProductId;
@@ -73,6 +74,8 @@ class UpdateProductQuantityInCartCommand
      * @param string $action
      * @param int|null $combinationId
      * @param int|null $customizationId
+     * @throws CartConstraintException
+     * @throws CartException
      */
     public function __construct(
         $cartId,

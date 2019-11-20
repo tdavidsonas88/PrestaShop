@@ -27,10 +27,11 @@
 namespace Tests\Integration\Behaviour\Features\Context\Domain;
 
 use Behat\Behat\Tester\Exception\PendingException;
-use Context;
 use Exception;
 use Order;
 use OrderState;
+use PrestaShop\PrestaShop\Core\Domain\Cart\Exception\CartConstraintException;
+use PrestaShop\PrestaShop\Core\Domain\Employee\Exception\InvalidEmployeeIdException;
 use PrestaShop\PrestaShop\Core\Domain\Order\Command\AddOrderFromBackOfficeCommand;
 use PrestaShop\PrestaShop\Core\Domain\Order\Command\BulkChangeOrderStatusCommand;
 use PrestaShop\PrestaShop\Core\Domain\Order\Exception\OrderException;
@@ -39,6 +40,7 @@ use PrestaShop\PrestaShop\Core\Domain\Order\ValueObject\OrderId;
 use Tests\Integration\Behaviour\Features\Context\SharedStorage;
 use PrestaShop\PrestaShop\Core\Domain\Order\Invoice\Command\GenerateInvoiceCommand;
 use Product;
+use Context;
 
 class OrderFeatureContext extends AbstractDomainFeatureContext
 {
@@ -124,10 +126,19 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
 
     /**
      * @Given there are :countOfOrders orders with Status :currentStateId
+     * @param int $countOfOrders
+     * @param int $currentStateId
      * @throws OrderException
+     * @throws CartConstraintException
+     * @throws InvalidEmployeeIdException
      */
     public function thereAreOrdersWithStatus(int $countOfOrders, int $currentStateId)
     {
+        for ($i = 0; $i < $countOfOrders; $i++) {
+            /** @var AddOrderFromBackOfficeCommand $addOrderFromBackOfficeCommand */
+            $addOrderFromBackOfficeCommand = new AddOrderFromBackOfficeCommand();
+            $this->getCommandBus()->handle($addOrderFromBackOfficeCommand);
+        }
         throw new PendingException();
     }
 
@@ -199,9 +210,26 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
     {
         // todo: while BulkChangeOrderStatusCommand is not logging anything anywhere this test looses some meaning
         // todo: if logging would be implemented this test could be more meaningful - SUCCESS_MESSAGE may not be empty
-        // todo: output could be from the last line of log file: $string = exec( 'tail -n 10 /you/file/full/path/here');
+        // todo: output could be from the last line of log file: $string = exec( 'tail -n 1 /you/file/full/path/here');
         if (strpos($this->output, $message) === false) {
-            throw new Exception(sprintf('Did not see "%s" in the output "%s"', self::SUCCESS_MESSAGE, $this->output));
+            throw new Exception(
+                sprintf('Did not see "%s" in the output "%s"', self::SUCCESS_MESSAGE, $this->output)
+            );
         }
     }
+
+//    /**
+//     * @Given The current currency is :currency
+//     * @throws Exception
+//     */
+//    public function theCurrentCurrencyIs(string $currency)
+//    {
+//        $currencyId = \Currency::exists($currency);
+//        $currentCurrency = Context::getContext()->currency;
+//        if ($currencyId !== $currentCurrency) {
+//            throw new Exception(
+//                sprintf('Current currency is not "%s" but "%s"', $currency, $currentCurrency)
+//            );
+//        }
+//    }
 }

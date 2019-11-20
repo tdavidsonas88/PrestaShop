@@ -98,10 +98,12 @@ class CartFeatureContext extends AbstractDomainFeatureContext
      */
     public function selectAddressAsDeliveryAndInvoiceAddress($countryIsoCode, $customerReference, $cartReference)
     {
+        /** @var \Customer $customer */
         $customer = SharedStorage::getStorage()->get($customerReference);
 
         $getAddressByCountryIsoCode = static function ($isoCode) use ($customer) {
-            $customerAddresses = $customer->getAddresses((int) Configuration::get('PS_LANG_DEFAULT'));
+            $psLangDefault = (int) Configuration::get('PS_LANG_DEFAULT');
+            $customerAddresses = $customer->getAddresses($psLangDefault);
 
             foreach ($customerAddresses as $address) {
                 $country = new Country($address['id_country']);

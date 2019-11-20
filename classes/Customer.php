@@ -565,6 +565,7 @@ class CustomerCore extends ObjectModel
      * @param int $idLang Language ID
      *
      * @return array Addresses
+     * @throws PrestaShopDatabaseException
      */
     public function getAddresses($idLang)
     {

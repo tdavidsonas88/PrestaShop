@@ -74,10 +74,13 @@ class CustomerFeatureContext extends AbstractPrestaShopFeatureContext
 
     /**
      * @Given customer :reference has address in :isoCode country
+     * @throws Exception
      */
     public function customerHasAddressInCountry($reference, $isoCode)
     {
+        /** @var Customer $customer */
         $customer = SharedStorage::getStorage()->get($reference);
+
         $customerAddresses = $customer->getAddresses((int) Configuration::get('PS_LANG_DEFAULT'));
 
         foreach ($customerAddresses as $address) {
@@ -165,4 +168,13 @@ class CustomerFeatureContext extends AbstractPrestaShopFeatureContext
         }
         $this->customers = [];
     }
+
+    /**
+     * @Given customer :arg1 all addresses are in :arg2 country
+     */
+    public function customerAllAddressesAreInCountry($arg1, $arg2)
+    {
+        throw new PendingException();
+    }
+
 }

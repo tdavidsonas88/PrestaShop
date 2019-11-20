@@ -11,6 +11,8 @@ Feature: Add Order from Back Office
   Scenario: Add order from Back Office with free shipping
     Given I am logged in as "test@prestashop.com" employee
     Given The current currency is "EUR"
+    # it fails if the country is not enabled in default testdb data. For example: FR
+    Given customer "customer1" all addresses are in "US" country
     And there is customer "customer1" with email "pub@prestashop.com"
     And customer "customer1" has address in "US" country
     And the module "dummy_payment" is installed
