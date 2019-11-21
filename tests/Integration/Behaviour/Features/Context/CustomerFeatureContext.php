@@ -170,9 +170,9 @@ class CustomerFeatureContext extends AbstractPrestaShopFeatureContext
     }
 
     /**
-     * @Given customer :arg1 all addresses are in :arg2 country
+     * @Given customer :arg1 delivery and invoice address are :arg2 country
      */
-    public function customerAllAddressesAreInCountry($arg1, $arg2)
+    public function customerDeliveryAndInvoiceAddressAreCountry($arg1, $arg2)
     {
         throw new PendingException();
     }
