@@ -143,42 +143,9 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
     }
 
     /**
-     * @Given I am on :url
+     * @Given I update :countOfOrders orders to status string :status
      */
-    public function iAmOn(string $url)
-    {
-        throw new PendingException();
-    }
-
-    /**
-     * @When I select first checkbox on the Orders table with status :currentState
-     */
-    public function iSelectFirstCheckboxOnTheOrdersTableWithStatus(int $currentState)
-    {
-        throw new PendingException();
-    }
-
-    /**
-     * @When I select second checkbox on the Orders table with status :currentState
-     */
-    public function iSelectSecondCheckboxOnTheOrdersTableWithStatus(int $currentState)
-    {
-        throw new PendingException();
-    }
-
-
-    /**
-     * @When I click :identifier
-     */
-    public function iClick(string $identifier)
-    {
-        throw new PendingException();
-    }
-
-    /**
-     * @When I choose :identifier
-     */
-    public function iChoose(string $identifier)
+    public function iUpdateOrdersToStatus(string $status, int $countOfOrders)
     {
         throw new PendingException();
     }
@@ -203,18 +170,22 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
     }
 
     /**
-     * @Then I should see :message
+     * @Given there are :numberOfOrders existing orders
      * @throws Exception
      */
-    public function iShouldSee(string $message)
+    public function thereAreExistingOrders(int $numberOfOrders)
     {
-        // todo: while BulkChangeOrderStatusCommand is not logging anything anywhere this test looses some meaning
-        // todo: if logging would be implemented this test could be more meaningful - SUCCESS_MESSAGE may not be empty
-        // todo: output could be from the last line of log file: $string = exec( 'tail -n 1 /you/file/full/path/here');
-        if (strpos($this->output, $message) === false) {
-            throw new Exception(
-                sprintf('Did not see "%s" in the output "%s"', self::SUCCESS_MESSAGE, $this->output)
-            );
+        $timestampFrom = strtotime("-1 year");
+        $dateFrom = date('Y-m-d', $timestampFrom);
+        $timestampTo = strtotime("+1 year");
+        $dateTo = date('Y-m-d', $timestampTo);
+
+        /** @var array $orders */
+        $orders = Order::getOrdersIdByDate($dateFrom, $dateTo);
+
+        $countOfOrders = count($orders);
+        if ($countOfOrders < $numberOfOrders) {
+            throw new Exception('There are less orders than '.$numberOfOrders);
         }
     }
 
