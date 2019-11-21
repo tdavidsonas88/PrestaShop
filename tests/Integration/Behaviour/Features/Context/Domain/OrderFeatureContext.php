@@ -159,34 +159,35 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
      * @Given I update :countOfOrders orders to statusId :statusId
      * @throws OrderException
      */
-    public function iUpdateOrdersToStatusid(string $statusId, int $countOfOrders)
+    public function iUpdateOrdersToStatusid(int $statusId, int $countOfOrders)
     {
         /** @var array $orders */
         $ordersIds = $this->getOrdersIdsByDate();
+        $partOfOrderIds = array_slice($ordersIds, $countOfOrders - 1);
 
         $this->getCommandBus()->handle(
             new BulkChangeOrderStatusCommand(
-                $ordersIds, $statusId
+                $partOfOrderIds, $statusId
             )
         );
-
-
-
-        throw new PendingException();
     }
 
     /**
-     * @Then each of :arg1 orders should contain statusId :arg2
+     * @Then each of :countOfOrders orders should contain statusId :statusId
      */
-    public function eachOfOrdersShouldContainStatusid($arg1, $arg2)
+    public function eachOfOrdersShouldContainStatusid(int $countOfOrders, int $statusId)
     {
-        //        /** @var array $ordersWithInformations */
-//        $ordersWithInformations = Order::getOrdersWithInformations($countOfOrders);
-//
-//        foreach ($ordersWithInformations as $orderWithInformation) {
-//
-////            $orderWithInformation
-//        }
+        /** @var array $ordersWithInformations */
+        $ordersWithInformations = Order::getOrdersWithInformations($countOfOrders);
+
+        foreach ($ordersWithInformations as $orderWithInformation) {
+            $currentOrderState = $orderWithInformation['current_state'];
+            if ($currentOrderState != $statusId) {
+                throw new Exception(
+                    'After changing order status id should be ['.$statusId.'] but received ['.$currentOrderState.']'
+                );
+            }
+        }
         throw new PendingException();
     }
 
