@@ -141,53 +141,56 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
         }
         throw new PendingException();
     }
-
-    /**
-     * @Given I update :countOfOrders orders to status string :status
-     */
-    public function iUpdateOrdersToStatus(string $status, int $countOfOrders)
-    {
-        throw new PendingException();
-    }
-
-    /**
-     * @When I press :identifier
-     * @throws OrderException
-     */
-    public function iPress(string $identifier)
-    {
-        // todo: find orders with status $currentStateId from the test db
-        $orderIds = [1, 2];
-        $newStateId = 13;
-
-        switch ($identifier) {
-            case self::UPDATE_STATUS:
-                $this->getCommandBus()->handle(new BulkChangeOrderStatusCommand($orderIds, $newStateId));
-                break;
-            default:
-                throw new PendingException();
-        }
-    }
-
     /**
      * @Given there are :numberOfOrders existing orders
      * @throws Exception
      */
     public function thereAreExistingOrders(int $numberOfOrders)
     {
-        $timestampFrom = strtotime("-1 year");
-        $dateFrom = date('Y-m-d', $timestampFrom);
-        $timestampTo = strtotime("+1 year");
-        $dateTo = date('Y-m-d', $timestampTo);
-
         /** @var array $orders */
-        $orders = Order::getOrdersIdByDate($dateFrom, $dateTo);
-
-        $countOfOrders = count($orders);
+        $ordersIds = $this->getOrdersIdsByDate();
+        $countOfOrders = count($ordersIds);
         if ($countOfOrders < $numberOfOrders) {
             throw new Exception('There are less orders than '.$numberOfOrders);
         }
     }
+
+    /**
+     * @Given I update :countOfOrders orders to statusId :statusId
+     * @throws OrderException
+     */
+    public function iUpdateOrdersToStatusid(string $statusId, int $countOfOrders)
+    {
+        /** @var array $orders */
+        $ordersIds = $this->getOrdersIdsByDate();
+
+        $this->getCommandBus()->handle(
+            new BulkChangeOrderStatusCommand(
+                $ordersIds, $statusId
+            )
+        );
+
+
+
+        throw new PendingException();
+    }
+
+    /**
+     * @Then each of :arg1 orders should contain statusId :arg2
+     */
+    public function eachOfOrdersShouldContainStatusid($arg1, $arg2)
+    {
+        //        /** @var array $ordersWithInformations */
+//        $ordersWithInformations = Order::getOrdersWithInformations($countOfOrders);
+//
+//        foreach ($ordersWithInformations as $orderWithInformation) {
+//
+////            $orderWithInformation
+//        }
+        throw new PendingException();
+    }
+
+
 
 //    /**
 //     * @Given The current currency is :currency
@@ -203,4 +206,18 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
 //            );
 //        }
 //    }
+    /**
+     * @return array
+     */
+    public function getOrdersIdsByDate(): array
+    {
+        $timestampFrom = strtotime("-1 year");
+        $dateFrom = date('Y-m-d', $timestampFrom);
+        $timestampTo = strtotime("+1 year");
+        $dateTo = date('Y-m-d', $timestampTo);
+
+        /** @var array $orders */
+        $orders = Order::getOrdersIdByDate($dateFrom, $dateTo);
+        return $orders;
+    }
 }
