@@ -32,10 +32,13 @@ use Country;
 use Customer;
 use Exception;
 use PrestaShop\PrestaShop\Adapter\Validate;
+use PrestaShopDatabaseException;
 use RuntimeException;
 
 class CustomerFeatureContext extends AbstractPrestaShopFeatureContext
 {
+    const DEFAULT_CUSTOMER_ID = 0;
+
     use CartAwareTrait;
 
     /**
@@ -170,11 +173,26 @@ class CustomerFeatureContext extends AbstractPrestaShopFeatureContext
     }
 
     /**
-     * @Given customer :arg1 delivery and invoice address are :arg2 country
+     * @Given customer :customer addresses are in :countryIsoCode country
+     * @param string $customer
+     * @param string $countryIsoCode
+     * @return void
+     * @throws PrestaShopDatabaseException
+     * @throws Exception
      */
-    public function customerDeliveryAndInvoiceAddressAreCountry($arg1, $arg2)
+    public function customerAddressesAreInCountry(string $customer, string $countryIsoCode)
     {
-        throw new PendingException();
+        /** @var \Customer $customer */
+        $customer = SharedStorage::getStorage()->get($customer);
+
+        $psLangDefault = (int) Configuration::get('PS_LANG_DEFAULT');
+        $customerAddresses = $customer->getAddresses($psLangDefault);
+
+        foreach ($customerAddresses as $address) {
+            if ($address['iso_code'] !== $countryIsoCode) {
+                $customer->updateAddressCustomer($address, self::DEFAULT_CUSTOMER_ID);
+            }
+        }
     }
 
 }

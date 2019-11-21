@@ -560,6 +560,7 @@ class CustomerCore extends ObjectModel
     }
 
     /**
+     * hint: returning object instead of array would make code better - autocomplete could be used to get properties
      * Return customer addresses.
      *
      * @param int $idLang Language ID
@@ -576,7 +577,7 @@ class CustomerCore extends ObjectModel
             . '-' . (int) $idLang
             . '-' . ($shareOrder ? 1 : 0);
         if (!Cache::isStored($cacheId)) {
-            $sql = 'SELECT DISTINCT a.*, cl.`name` AS country, s.name AS state, s.iso_code AS state_iso
+            $sql = 'SELECT DISTINCT a.*, cl.`name` AS country, s.name AS state, s.iso_code AS state_iso, c.iso_code
                     FROM `' . _DB_PREFIX_ . 'address` a
                     LEFT JOIN `' . _DB_PREFIX_ . 'country` c ON (a.`id_country` = c.`id_country`)
                     LEFT JOIN `' . _DB_PREFIX_ . 'country_lang` cl ON (c.`id_country` = cl.`id_country`)
@@ -591,6 +592,17 @@ class CustomerCore extends ObjectModel
         }
 
         return Cache::retrieve($cacheId);
+    }
+
+    /**
+     * @param array $address
+     * @throws PrestaShopDatabaseException
+     */
+    public function updateAddressCustomer(array $address, int $idCustomer)
+    {
+        $addressId = $address['id_address'];
+        $sql = "UPDATE "._DB_PREFIX_."address a SET a.id_customer = $idCustomer WHERE a.id_address = $addressId";
+        Db::getInstance(_PS_USE_SQL_SLAVE_)->execute($sql);
     }
 
     /**
