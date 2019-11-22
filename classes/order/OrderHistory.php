@@ -74,6 +74,7 @@ class OrderHistoryCore extends ObjectModel
     );
 
     /**
+     * todo: $id_order should be either int or object - code style should be refactored
      * Sets the new state of the given order.
      *
      * @param int $new_order_state

@@ -39,7 +39,6 @@ use PrestaShop\PrestaShop\Core\Domain\Order\Product\Command\AddProductToOrderCom
 use PrestaShop\PrestaShop\Core\Domain\Order\ValueObject\OrderId;
 use PrestaShopDatabaseException;
 use PrestaShopException;
-use Tests\Integration\Behaviour\Features\Context\CommonFeatureContext;
 use Tests\Integration\Behaviour\Features\Context\SharedStorage;
 use PrestaShop\PrestaShop\Core\Domain\Order\Invoice\Command\GenerateInvoiceCommand;
 use Product;
@@ -131,49 +130,40 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
     }
 
     /**
-     * @Given there are :countOfOrders orders with Status :currentStateId
-     * @param int $countOfOrders
-     * @param int $currentStateId
-     * @throws OrderException
-     * @throws CartConstraintException
-     * @throws InvalidEmployeeIdException
-     */
-    public function thereAreOrdersWithStatus(int $countOfOrders, int $currentStateId)
-    {
-        for ($i = 0; $i < $countOfOrders; $i++) {
-            /** @var AddOrderFromBackOfficeCommand $addOrderFromBackOfficeCommand */
-            $addOrderFromBackOfficeCommand = new AddOrderFromBackOfficeCommand();
-            $this->getCommandBus()->handle($addOrderFromBackOfficeCommand);
-        }
-        throw new PendingException();
-    }
-    /**
-     * @Given there are :numberOfOrders existing orders
+     * @Given there are :countOfOrders existing orders
      * @throws Exception
      */
-    public function thereAreExistingOrders(int $numberOfOrders)
+    public function thereAreExistingOrders(int $countOfOrders)
     {
-        /** @var array $orders */
-        $ordersIds = $this->getOrdersIdsByDate();
-        $countOfOrders = count($ordersIds);
-        if ($countOfOrders < $numberOfOrders) {
-            throw new Exception('There are less orders than '.$numberOfOrders);
+        /** @var array $ordersWithInformations */
+        $ordersWithInformations = Order::getOrdersWithInformations($countOfOrders);
+        $countOfOrdersFromDb = count($ordersWithInformations);
+        if ($countOfOrders !== $countOfOrdersFromDb) {
+            throw new Exception(
+                'There are less orders than expected ['.$countOfOrders.'] actual ['.$countOfOrdersFromDb.']'
+            );
         }
     }
 
     /**
      * @Given I update :countOfOrders orders to statusId :statusId
+     * @param int $statusId
+     * @param int $countOfOrders
      * @throws OrderException
      */
     public function iUpdateOrdersToStatusid(int $statusId, int $countOfOrders)
     {
-        /** @var array $orders */
-        $ordersIds = $this->getOrdersIdsByDate();
-        $partOfOrderIds = array_slice($ordersIds, $countOfOrders - 1);
+        /** @var array $ordersWithInformations */
+        $ordersWithInformations = Order::getOrdersWithInformations($countOfOrders);
+
+        $orderIds = [];
+        foreach ($ordersWithInformations as $orderWithInformations) {
+            $orderIds[] = (int) $orderWithInformations['id_order'];
+        }
 
         $this->getCommandBus()->handle(
             new BulkChangeOrderStatusCommand(
-                $partOfOrderIds, $statusId
+                $orderIds, $statusId
             )
         );
     }
