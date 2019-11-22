@@ -15,13 +15,14 @@ module.exports = class BOBasePage extends CommonPage {
 
     // top navbar
     this.headerLogoImage = '#header_logo';
-    this.userProfileIcon = '#employee_infos';
+    this.userProfileIcon = '#employee_infos,#header_infos #header-employee-container';
     this.userProfileLogoutLink = 'a#header_logout';
     this.shopVersionBloc = '#shop_version';
     this.headerShopNameLink = '#header_shopname';
 
     // left navbar
     // SELL
+    // Orders
     this.ordersParentLink = 'li#subtab-AdminParentOrders';
     this.ordersLink = '#subtab-AdminOrders';
 
@@ -40,10 +41,16 @@ module.exports = class BOBasePage extends CommonPage {
     this.customersParentLink = 'li#subtab-AdminParentCustomer';
     this.customersLink = '#subtab-AdminCustomers';
 
+    // Improve
     // Modules
     this.modulesParentLink = '#subtab-AdminParentModulesSf';
     this.moduleCatalogueLink = '#subtab-AdminParentModulesCatalog';
     this.moduleManagerLink = '#subtab-AdminModulesSf';
+
+    // Design
+    this.designParentLink = '#subtab-AdminParentThemes';
+    // Pages
+    this.pagesLink = '#subtab-AdminCmsContent';
 
     // International
     this.internationalParentLink = '#subtab-AdminInternational';
@@ -52,6 +59,11 @@ module.exports = class BOBasePage extends CommonPage {
     // Shop Parameters
     this.shopParametersParentLink = '#subtab-ShopParameters';
     this.shopParametersGeneralLink = '#subtab-AdminParentPreferences';
+
+    // Advanced Parameters
+    this.advancedParametersLink = '#subtab-AdminAdvancedParameters';
+    // Team
+    this.teamLink = '#subtab-AdminParentEmployees';
 
     // welcome module
     this.onboardingCloseButton = 'button.onboarding-button-shut-down';

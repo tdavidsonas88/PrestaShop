@@ -172,27 +172,4 @@ class CustomerFeatureContext extends AbstractPrestaShopFeatureContext
         $this->customers = [];
     }
 
-    /**
-     * @Given customer :customer addresses are in :countryIsoCode country
-     * @param string $customer
-     * @param string $countryIsoCode
-     * @return void
-     * @throws PrestaShopDatabaseException
-     * @throws Exception
-     */
-    public function customerAddressesAreInCountry(string $customer, string $countryIsoCode)
-    {
-        /** @var \Customer $customer */
-        $customer = SharedStorage::getStorage()->get($customer);
-
-        $psLangDefault = (int) Configuration::get('PS_LANG_DEFAULT');
-        $customerAddresses = $customer->getAddresses($psLangDefault);
-
-        foreach ($customerAddresses as $address) {
-            if ($address['iso_code'] !== $countryIsoCode) {
-                $customer->updateAddressCustomer($address, self::DEFAULT_CUSTOMER_ID);
-            }
-        }
-    }
-
 }

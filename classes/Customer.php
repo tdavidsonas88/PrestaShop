@@ -595,17 +595,6 @@ class CustomerCore extends ObjectModel
     }
 
     /**
-     * @param array $address
-     * @throws PrestaShopDatabaseException
-     */
-    public function updateAddressCustomer(array $address, int $idCustomer)
-    {
-        $addressId = $address['id_address'];
-        $sql = "UPDATE "._DB_PREFIX_."address a SET a.id_customer = $idCustomer WHERE a.id_address = $addressId";
-        Db::getInstance(_PS_USE_SQL_SLAVE_)->execute($sql);
-    }
-
-    /**
      * Get simplified Addresses arrays.
      *
      * @param int|null $idLang Language ID
