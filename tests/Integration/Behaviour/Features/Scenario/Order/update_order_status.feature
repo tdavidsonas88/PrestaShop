@@ -1,3 +1,4 @@
+# ./vendor/bin/behat -c tests/Integration/Behaviour/behat.yml -s order --name 'Orders statuses'
 @reset-database-before-feature
 Feature: Orders statuses from Back Office
   In order to change statuses of multiple orders
@@ -7,7 +8,7 @@ Feature: Orders statuses from Back Office
   Background:
     Given the current currency is "EUR"
 
-  Scenario: Change status of multiple orders using Bulk actions
+  Scenario: Update multiple orders statuses using Bulk actions
     Given there are 2 existing orders
     When I update 2 orders to statusId 5
     Then each of 2 orders should contain statusId 5
