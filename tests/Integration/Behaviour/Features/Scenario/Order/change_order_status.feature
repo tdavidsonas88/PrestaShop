@@ -6,6 +6,7 @@ Feature: Orders statuses from Back Office
 
   Scenario: Change status of multiple orders
     Given there are 2 existing orders
+    Given the current currency is "EUR"
     When I update 2 orders to statusId 5
     Then each of 2 orders should contain statusId 5
 

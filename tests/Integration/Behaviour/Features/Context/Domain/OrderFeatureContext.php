@@ -184,25 +184,8 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
                 );
             }
         }
-        throw new PendingException();
     }
 
-
-
-//    /**
-//     * @Given The current currency is :currency
-//     * @throws Exception
-//     */
-//    public function theCurrentCurrencyIs(string $currency)
-//    {
-//        $currencyId = \Currency::exists($currency);
-//        $currentCurrency = Context::getContext()->currency;
-//        if ($currencyId !== $currentCurrency) {
-//            throw new Exception(
-//                sprintf('Current currency is not "%s" but "%s"', $currency, $currentCurrency)
-//            );
-//        }
-//    }
     /**
      * @return array
      */
