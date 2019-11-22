@@ -34,6 +34,7 @@ use PrestaShop\PrestaShop\Core\Domain\Cart\Exception\CartConstraintException;
 use PrestaShop\PrestaShop\Core\Domain\Employee\Exception\InvalidEmployeeIdException;
 use PrestaShop\PrestaShop\Core\Domain\Order\Command\AddOrderFromBackOfficeCommand;
 use PrestaShop\PrestaShop\Core\Domain\Order\Command\BulkChangeOrderStatusCommand;
+use PrestaShop\PrestaShop\Core\Domain\Order\Command\UpdateOrderStatusCommand;
 use PrestaShop\PrestaShop\Core\Domain\Order\Exception\OrderException;
 use PrestaShop\PrestaShop\Core\Domain\Order\Product\Command\AddProductToOrderCommand;
 use PrestaShop\PrestaShop\Core\Domain\Order\ValueObject\OrderId;
@@ -187,17 +188,16 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
     }
 
     /**
-     * @return array
+     * @When I update order :orderId to status :orderStatusId
      */
-    public function getOrdersIdsByDate(): array
+    public function iUpdateOrderToStatus(int $orderId, int $orderStatusId)
     {
-        $timestampFrom = strtotime("-1 year");
-        $dateFrom = date('Y-m-d', $timestampFrom);
-        $timestampTo = strtotime("+1 year");
-        $dateTo = date('Y-m-d', $timestampTo);
-
-        /** @var array $orders */
-        $orders = Order::getOrdersIdByDate($dateFrom, $dateTo);
-        return $orders;
+        $this->getCommandBus()->handle(
+            new UpdateOrderStatusCommand(
+                $orderId,
+                $orderStatusId
+            )
+        );
     }
+
 }

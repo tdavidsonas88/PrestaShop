@@ -12,8 +12,14 @@ Feature: Orders statuses from Back Office
     When I update 2 orders to statusId 5
     Then each of 2 orders should contain statusId 5
 
-  Scenario: Change status of individual order by clicking on Status column and choosing the status
+  Scenario: Update order status by clicking on Status column and choosing the status
     Given there are 1 existing orders
+    When I update order 1 to status 3
+    Then each of 1 orders should contain statusId 3
+
+
+
+
 
 
 
