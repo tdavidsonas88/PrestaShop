@@ -37,6 +37,9 @@ use PrestaShop\PrestaShop\Core\Domain\Order\Command\BulkChangeOrderStatusCommand
 use PrestaShop\PrestaShop\Core\Domain\Order\Exception\OrderException;
 use PrestaShop\PrestaShop\Core\Domain\Order\Product\Command\AddProductToOrderCommand;
 use PrestaShop\PrestaShop\Core\Domain\Order\ValueObject\OrderId;
+use PrestaShopDatabaseException;
+use PrestaShopException;
+use Tests\Integration\Behaviour\Features\Context\CommonFeatureContext;
 use Tests\Integration\Behaviour\Features\Context\SharedStorage;
 use PrestaShop\PrestaShop\Core\Domain\Order\Invoice\Command\GenerateInvoiceCommand;
 use Product;
@@ -44,13 +47,16 @@ use Context;
 
 class OrderFeatureContext extends AbstractDomainFeatureContext
 {
-    const UPDATE_STATUS = "Update status";
-    const SUCCESS_MESSAGE = "";
-
-    /** @var string */
-    private $output;
-
     /**
+     * @param $orderReference
+     * @param $cartReference
+     * @param $paymentModuleName
+     * @param $orderStatus
+     * @throws CartConstraintException
+     * @throws InvalidEmployeeIdException
+     * @throws OrderException
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
      * @When I add order :orderReference from cart :cartReference with :paymentModuleName payment method and :orderStatus order status
      */
     public function placeOrderWithPaymentMethodAndOrderStatus(
