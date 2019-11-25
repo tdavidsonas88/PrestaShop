@@ -14,9 +14,6 @@ Feature: Add Order from Back Office
     And country "US" is enabled
     And there is customer "customer_for_free_shipping" with email "pub@prestashop.com"
     And customer "customer_for_free_shipping" has address in "US" country
-    Given the current currency is "EUR"
-    And there is customer "customer1" with email "pub@prestashop.com"
-    And customer "customer1" has address in "US" country
     And the module "dummy_payment" is installed
     When I create an empty cart "dummy_cart" for customer "customer_for_free_shipping"
     And I add 2 products with reference "demo_13" to the cart "dummy_cart"
