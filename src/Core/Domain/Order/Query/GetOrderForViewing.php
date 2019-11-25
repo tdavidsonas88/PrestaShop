@@ -26,6 +26,7 @@
 
 namespace PrestaShop\PrestaShop\Core\Domain\Order\Query;
 
+use PrestaShop\PrestaShop\Core\Domain\Order\Exception\OrderException;
 use PrestaShop\PrestaShop\Core\Domain\Order\ValueObject\OrderId;
 
 /**
@@ -40,6 +41,7 @@ class GetOrderForViewing
 
     /**
      * @param int $orderId
+     * @throws OrderException
      */
     public function __construct(int $orderId)
     {
