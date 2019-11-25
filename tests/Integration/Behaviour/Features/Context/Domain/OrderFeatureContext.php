@@ -47,6 +47,11 @@ use Context;
 
 class OrderFeatureContext extends AbstractDomainFeatureContext
 {
+    const ORDER_STATUS_MAP = [
+        'Awaiting bank wire payment' => 1,
+        'Delivered' => 5,
+    ];
+
     /**
      * @param $orderReference
      * @param $cartReference
@@ -147,12 +152,10 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
     }
 
     /**
-     * @Given I update :countOfOrders orders to statusId :statusId
-     * @param int $statusId
-     * @param int $countOfOrders
+     * @When I update :countOfOrders orders to status :status
      * @throws OrderException
      */
-    public function iUpdateOrdersToStatusid(int $statusId, int $countOfOrders)
+    public function iUpdateOrdersToStatus(string $status, int $countOfOrders)
     {
         /** @var array $ordersWithInformations */
         $ordersWithInformations = Order::getOrdersWithInformations($countOfOrders);
@@ -162,6 +165,8 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
             $orderIds[] = (int) $orderWithInformations['id_order'];
         }
 
+        $statusId = self::ORDER_STATUS_MAP[$status];
+
         $this->getCommandBus()->handle(
             new BulkChangeOrderStatusCommand(
                 $orderIds, $statusId
@@ -170,32 +175,38 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
     }
 
     /**
-     * @Then each of :countOfOrders orders should contain statusId :statusId
+     * @Then each of :countOfOrders orders should contain status :status
+     * @param int $countOfOrders
+     * @param string $status
+     * @throws Exception
      */
-    public function eachOfOrdersShouldContainStatusid(int $countOfOrders, int $statusId)
+    public function eachOfOrdersShouldContainStatus(int $countOfOrders, string $status)
     {
         /** @var array $ordersWithInformations */
         $ordersWithInformations = Order::getOrdersWithInformations($countOfOrders);
 
         foreach ($ordersWithInformations as $orderWithInformation) {
-            $currentOrderState = $orderWithInformation['current_state'];
-            if ($currentOrderState != $statusId) {
+            $currentOrderStateId = $orderWithInformation['current_state'];
+            $currentOrderState = array_search($currentOrderStateId, self::ORDER_STATUS_MAP);
+            if ($currentOrderState !== $status) {
                 throw new Exception(
-                    'After changing order status id should be ['.$statusId.'] but received ['.$currentOrderState.']'
+                    'After changing order status id should be ['.$status.'] but received ['.$currentOrderState.']'
                 );
             }
         }
     }
 
     /**
-     * @When I update order :orderId to status :orderStatusId
+     * @When I update order :orderId to status :status
      */
-    public function iUpdateOrderToStatus(int $orderId, int $orderStatusId)
+    public function iUpdateOrderToStatus(int $orderId, string $status)
     {
+        $statusId = self::ORDER_STATUS_MAP[$status];
+
         $this->getCommandBus()->handle(
             new UpdateOrderStatusCommand(
                 $orderId,
-                $orderStatusId
+                $statusId
             )
         );
     }
