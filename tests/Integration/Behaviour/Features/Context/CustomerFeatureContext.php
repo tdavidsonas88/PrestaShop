@@ -37,8 +37,6 @@ use RuntimeException;
 
 class CustomerFeatureContext extends AbstractPrestaShopFeatureContext
 {
-    const DEFAULT_CUSTOMER_ID = 0;
-
     use CartAwareTrait;
 
     /**
@@ -83,7 +81,6 @@ class CustomerFeatureContext extends AbstractPrestaShopFeatureContext
     {
         /** @var Customer $customer */
         $customer = SharedStorage::getStorage()->get($reference);
-
         $customerAddresses = $customer->getAddresses((int) Configuration::get('PS_LANG_DEFAULT'));
 
         foreach ($customerAddresses as $address) {
@@ -171,5 +168,4 @@ class CustomerFeatureContext extends AbstractPrestaShopFeatureContext
         }
         $this->customers = [];
     }
-
 }

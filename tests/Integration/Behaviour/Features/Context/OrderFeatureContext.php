@@ -55,7 +55,7 @@ class OrderFeatureContext extends AbstractPrestaShopFeatureContext
     {
         $defaultShopId = Configuration::get('PS_SHOP_DEFAULT');
         Shop::setContext(Shop::CONTEXT_SHOP, $defaultShopId);
-        //
+        // needed because if no controller defined then CONTEXT_ALL is selected and exception is thrown
         \Context::getContext()->controller = 'test';
     }
 
