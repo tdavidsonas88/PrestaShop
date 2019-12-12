@@ -26,6 +26,7 @@
 
 namespace PrestaShop\PrestaShop\Core\Domain\Language\Command;
 
+use PrestaShop\PrestaShop\Core\Domain\Language\Exception\LanguageConstraintException;
 use PrestaShop\PrestaShop\Core\Domain\Language\ValueObject\IsoCode;
 use PrestaShop\PrestaShop\Core\Domain\Language\ValueObject\TagIETF;
 
@@ -97,6 +98,8 @@ class AddLanguageCommand
      * @param bool $isRtl
      * @param bool $isActive
      * @param int[] $shopAssociation
+     *
+     * @throws LanguageConstraintException
      */
     public function __construct(
         $name,
