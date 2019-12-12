@@ -4,12 +4,16 @@
 namespace Tests\Integration\Behaviour\Features\Context\Domain;
 
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
+use PHPUnit_Framework_Assert;
 use PrestaShop\PrestaShop\Core\Domain\Language\Command\AddLanguageCommand;
 use PrestaShop\PrestaShop\Core\Domain\Language\Exception\LanguageConstraintException;
 use PrestaShop\PrestaShop\Core\Domain\Language\Exception\LanguageNotFoundException;
 use PrestaShop\PrestaShop\Core\Domain\Language\Query\GetLanguageForEditing;
+use PrestaShop\PrestaShop\Core\Domain\Language\QueryResult\EditableLanguage;
+use PrestaShop\PrestaShop\Core\Domain\Language\ValueObject\IsoCode;
+use PrestaShop\PrestaShop\Core\Domain\Language\ValueObject\LanguageId;
+use PrestaShop\PrestaShop\Core\Domain\Language\ValueObject\TagIETF;
 use PrestaShopBundle\Utils\BoolParser;
 use Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
@@ -73,11 +77,47 @@ class LanguageFeatureContext extends AbstractDomainFeatureContext
     }
 
     /**
-     * @Then language with id :arg1 should have the following properties:
+     * @Then language with id :languageId should have the following properties:
+     *
+     * @param int $languageId
+     * @param TableNode $table
+     *
+     * @throws LanguageConstraintException
+     * @throws ServiceCircularReferenceException
+     * @throws ServiceNotFoundException
      */
-    public function languageWithIdShouldHaveTheFollowingProperties($arg1, TableNode $table)
+    public function languageWithIdShouldHaveTheFollowingProperties(int $languageId, TableNode $table)
     {
-        throw new PendingException();
+        $data = $table->getRowsHash();
+        /** @var EditableLanguage $expectedEditableLanguage */
+        $expectedEditableLanguage = $this->mapToEditableLanguage($languageId, $data);
+
+        /** @var EditableLanguage $editableLanguage */
+        $editableLanguage = $this->getQueryBus()->handle(new GetLanguageForEditing($languageId));
+
+        PHPUnit_Framework_Assert::assertEquals($expectedEditableLanguage, $editableLanguage);
     }
 
+    /**
+     * @param int $languageId
+     * @param array $data
+     *
+     * @return EditableLanguage
+     *
+     * @throws LanguageConstraintException
+     */
+    private function mapToEditableLanguage(int $languageId, array $data)
+    {
+        return new EditableLanguage(
+            new LanguageId($languageId),
+            $data['name'],
+            new IsoCode($data['iso_code']),
+            new TagIETF($data['tag_ietf']),
+            $data['short_date_format'],
+            $data['full_date_format'],
+            BoolParser::castToBool($data['is_rtl']),
+            BoolParser::castToBool($data['is_active']),
+            array($data['shop_association_id'])
+        );
+    }
 }
