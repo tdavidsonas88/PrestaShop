@@ -13,10 +13,8 @@ Feature: Language
       | tag_ietf              | fr-fr       |
       | short_date_format     | Y-m-d       |
       | full_date_format      | Y-m-d H:i:s |
-      | flag_image_path       |             |
-      | no_picture_image_path |             |
-#      | flag_image_path       | /tmp/phpHimEFi            |
-#      | no_picture_image_path | /tmp/phpszcohu            |
+      | flag_image_path       | /tmp/phpHim |
+      | no_picture_image_path | /tmp/phpszc |
       | is_rtl                | false       |
       | is_active             | false       |
       | shop_association_id   | 1           |
@@ -26,10 +24,8 @@ Feature: Language
       | tag_ietf              | fr-fr       |
       | short_date_format     | Y-m-d       |
       | full_date_format      | Y-m-d H:i:s |
-      | flag_image_path       |             |
-      | no_picture_image_path |             |
-#      | flag_image_path       | /tmp/phpHimEFi            |
-#      | no_picture_image_path | /tmp/phpszcohu            |
+      | flag_image_path       | /tmp/phpHim |
+      | no_picture_image_path | /tmp/phpszc |
       | is_rtl                | false       |
       | is_active             | false       |
       | shop_association_id   | 1           |

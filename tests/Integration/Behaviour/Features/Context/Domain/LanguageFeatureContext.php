@@ -10,6 +10,9 @@ use PrestaShop\PrestaShop\Core\Domain\Language\Command\AddLanguageCommand;
 use PrestaShop\PrestaShop\Core\Domain\Language\Exception\LanguageConstraintException;
 use PrestaShop\PrestaShop\Core\Domain\Language\Exception\LanguageNotFoundException;
 use PrestaShop\PrestaShop\Core\Domain\Language\Query\GetLanguageForEditing;
+use PrestaShopBundle\Utils\BoolParser;
+use Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 class LanguageFeatureContext extends AbstractDomainFeatureContext
 {
@@ -17,6 +20,9 @@ class LanguageFeatureContext extends AbstractDomainFeatureContext
      * @Given there is language with id :languageId
      *
      * @param int $languageId
+     *
+     * @throws ServiceCircularReferenceException
+     * @throws ServiceNotFoundException
      */
     public function thereIsLanguageWithId(int $languageId)
     {
@@ -27,6 +33,9 @@ class LanguageFeatureContext extends AbstractDomainFeatureContext
      * @Given there is no language with id :languageId
      *
      * @param int $languageId
+     *
+     * @throws ServiceCircularReferenceException
+     * @throws ServiceNotFoundException
      */
     public function thereIsNoLanguageWithId(int $languageId)
     {
@@ -42,6 +51,9 @@ class LanguageFeatureContext extends AbstractDomainFeatureContext
      *
      * @param TableNode $table
      * @throws LanguageConstraintException
+     *
+     * @throws ServiceCircularReferenceException
+     * @throws ServiceNotFoundException
      */
     public function iAddNewLanguageWithTheFollowingProperties(TableNode $table)
     {
@@ -54,8 +66,8 @@ class LanguageFeatureContext extends AbstractDomainFeatureContext
             $data['full_date_format'],
             $data['flag_image_path'],
             $data['no_picture_image_path'],
-            $data['is_rtl'],
-            $data['is_active'],
+            BoolParser::castToBool($data['is_rtl']),
+            BoolParser::castToBool($data['is_active']),
             array($data['shop_association_id'])
         ));
     }
