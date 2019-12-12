@@ -19,7 +19,7 @@ Feature: Language
 #      | no_picture_image_path | /tmp/phpszcohu            |
       | is_rtl                | false       |
       | is_active             | false       |
-      | shop_association      | false       |
+      | shop_association_id   | 1           |
     Then language with id 2 should have the following properties:
       | name                  | France      |
       | iso_code              | fr          |
@@ -32,5 +32,5 @@ Feature: Language
 #      | no_picture_image_path | /tmp/phpszcohu            |
       | is_rtl                | false       |
       | is_active             | false       |
-      | shop_association      | false       |
+      | shop_association_id   | 1           |
 
