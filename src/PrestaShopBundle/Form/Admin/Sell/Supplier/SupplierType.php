@@ -30,6 +30,7 @@ use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\AddressDniRequire
 use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\AddressStateRequired;
 use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\CleanHtml;
 use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\TypedRegex;
+use PrestaShop\PrestaShop\Core\ConstraintValidator\TypedRegexValidator;
 use PrestaShop\PrestaShop\Core\Domain\Address\AddressSettings;
 use PrestaShop\PrestaShop\Core\Domain\Supplier\SupplierSettings;
 use PrestaShop\PrestaShop\Core\Form\ConfigurableFormChoiceProviderInterface;
@@ -40,6 +41,7 @@ use PrestaShopBundle\Form\Admin\Type\SwitchType;
 use PrestaShopBundle\Form\Admin\Type\TranslatableType;
 use PrestaShopBundle\Form\Admin\Type\TranslateType;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -84,12 +86,17 @@ class SupplierType extends TranslatorAwareType
      */
     private $isMultistoreEnabled;
 
+    /** @var Router */
+    private $router;
+
     /**
      * @param array $countryChoices
+     * @param array $countryChoicesAttributes
      * @param ConfigurableFormChoiceProviderInterface $statesChoiceProvider
      * @param $contextCountryId
      * @param TranslatorInterface $translator
      * @param $isMultistoreEnabled
+     * @param Router $router
      * @param array $locales
      */
     public function __construct(
@@ -99,6 +106,7 @@ class SupplierType extends TranslatorAwareType
         $contextCountryId,
         TranslatorInterface $translator,
         $isMultistoreEnabled,
+        Router $router,
         array $locales = []
     ) {
         parent::__construct($translator, $locales);
@@ -108,6 +116,7 @@ class SupplierType extends TranslatorAwareType
         $this->statesChoiceProvider = $statesChoiceProvider;
         $this->contextCountryId = $contextCountryId;
         $this->isMultistoreEnabled = $isMultistoreEnabled;
+        $this->router = $router;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -115,8 +124,28 @@ class SupplierType extends TranslatorAwareType
         $data = $builder->getData();
         $countryId = 0 !== $data['id_country'] ? $data['id_country'] : $this->contextCountryId;
 
+        $invalidCharsText = sprintf(
+            '%s ' . TypedRegexValidator::GENERIC_NAME_CHARS,
+            $this->trans('Invalid characters:', 'Admin.Notifications.Info')
+        );
+
+        $invalidGenericNameHint = sprintf(
+            '%s <>={}',
+            $this->trans('Invalid characters:', 'Admin.Notifications.Info')
+        );
+
+        $keywordHint = sprintf(
+            '%s ' . PHP_EOL . $invalidGenericNameHint,
+            $this->trans(
+                'To add tags, click in the field, write something, and then press the "Enter" key.',
+                'Admin.Shopparameters.Help'
+            ));
+
         $builder
             ->add('name', TextType::class, [
+                'label' => $this->trans('Name', 'Admin.Global'),
+                'required' => true,
+                'help' => $invalidCharsText,
                 'constraints' => [
                     new NotBlank([
                         'message' => $this->trans(
@@ -137,6 +166,12 @@ class SupplierType extends TranslatorAwareType
                 ],
             ])
             ->add('description', TranslateType::class, [
+                'label' => $this->trans('Description', 'Admin.Global'),
+                'help' => sprintf(
+                    '%s %s',
+                    $this->trans('Will appear in the list of suppliers.', 'Admin.Catalog.Help'),
+                    $invalidCharsText
+                ),
                 'required' => false,
                 'type' => FormattedTextareaType::class,
                 'locales' => $this->locales,
@@ -153,21 +188,28 @@ class SupplierType extends TranslatorAwareType
                 ],
             ])
             ->add('phone', TextType::class, [
+                'label' => $this->trans('Phone', 'Admin.Global'),
+                'help' => $this->trans('Phone number for this supplier', 'Admin.Catalog.Help'),
                 'required' => false,
                 'constraints' => $this->getPhoneCommonConstraints(),
             ])
             ->add('mobile_phone', TextType::class, [
+                'label' => $this->trans('Mobile phone', 'Admin.Global'),
+                'help' => $this->trans('Mobile phone number for this supplier.', 'Admin.Catalog.Help'),
                 'required' => false,
                 'constraints' => $this->getPhoneCommonConstraints(),
             ])
             ->add('address', TextType::class, [
+                'label' => $this->trans('Address', 'Admin.Global'),
                 'constraints' => $this->getAddressCommonConstraints(),
             ])
             ->add('address2', TextType::class, [
+                'label' => $this->trans('Address (2)', 'Admin.Global'),
                 'required' => false,
                 'constraints' => $this->getAddressCommonConstraints(),
             ])
             ->add('post_code', TextType::class, [
+                'label' => $this->trans('Zip/postal code', 'Admin.Global'),
                 'required' => false,
                 'constraints' => [
                     new TypedRegex([
@@ -184,6 +226,7 @@ class SupplierType extends TranslatorAwareType
                 ],
             ])
             ->add('city', TextType::class, [
+                'label' => $this->trans('City', 'Admin.Global'),
                 'constraints' => [
                     new NotBlank([
                         'message' => $this->trans(
@@ -204,6 +247,7 @@ class SupplierType extends TranslatorAwareType
                 ],
             ])
             ->add('id_country', CountryChoiceType::class, [
+                'label' => $this->trans('Country', 'Admin.Global'),
                 'required' => true,
                 'withDniAttr' => true,
                 'constraints' => [
@@ -213,8 +257,13 @@ class SupplierType extends TranslatorAwareType
                         ),
                     ]),
                 ],
+                'attr' => [
+                    'class' => 'js-supplier-country-select',
+                    'data-states-url' => $this->router->generate('admin_country_states'),
+                ],
             ])
             ->add('id_state', ChoiceType::class, [
+                'label' => $this->trans('State', 'Admin.Global'),
                 'required' => true,
                 'choices' => $this->statesChoiceProvider->getChoices(['id_country' => $countryId]),
                 'constraints' => [
@@ -224,6 +273,7 @@ class SupplierType extends TranslatorAwareType
                 ],
             ])
             ->add('dni', TextType::class, [
+                'label' => $this->trans('DNI', 'Admin.Global'),
                 'required' => false,
                 'empty_data' => '',
                 'constraints' => [
@@ -245,9 +295,13 @@ class SupplierType extends TranslatorAwareType
                 ],
             ])
             ->add('logo', FileType::class, [
+                'label' => $this->trans('Logo', 'Admin.Global'),
                 'required' => false,
+                'help' => $this->trans('Upload a supplier logo from your computer.', 'Admin.Catalog.Help'),
             ])
             ->add('meta_title', TranslatableType::class, [
+                'label' => $this->trans('Meta title', 'Admin.Global'),
+                'help' => $invalidGenericNameHint,
                 'type' => TextType::class,
                 'required' => false,
                 'options' => [
@@ -267,6 +321,8 @@ class SupplierType extends TranslatorAwareType
                 ],
             ])
             ->add('meta_description', TranslatableType::class, [
+                'label' => $this->trans('Meta description', 'Admin.Global'),
+                'help' => $invalidGenericNameHint,
                 'type' => TextareaType::class,
                 'required' => false,
                 'options' => [
@@ -286,6 +342,8 @@ class SupplierType extends TranslatorAwareType
                 ],
             ])
             ->add('meta_keyword', TranslatableType::class, [
+                'label' => $this->trans('Meta keywords', 'Admin.Global'),
+                'help' => $keywordHint,
                 'type' => TextType::class,
                 'required' => false,
                 'options' => [
@@ -309,12 +367,14 @@ class SupplierType extends TranslatorAwareType
                 ],
             ])
             ->add('is_enabled', SwitchType::class, [
+                'label' => $this->trans('Enabled', 'Admin.Global'),
                 'required' => false,
             ])
         ;
 
         if ($this->isMultistoreEnabled) {
             $builder->add('shop_association', ShopChoiceTreeType::class, [
+                'label' => $this->trans('Shop association', 'Admin.Global'),
                 'required' => false,
                 'constraints' => [
                     new NotBlank([

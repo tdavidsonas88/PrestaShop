@@ -22,6 +22,13 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
  *#}
+
+{#
+* Leaving the path relative in prestashop_ui_kit will actually make it use
+* the bootstrap_4_horizontal_layout.html.twig file from Symfony instead of the one from PrestaShop
+* that means PrestaShop/Admin/TwigTemplateForm/bootstrap_4_horizontal_layout.html.twig
+* is no longer used by this theme template
+#}
 {% use 'bootstrap_4_horizontal_layout.html.twig' %}
 {% use '@PrestaShop/Admin/TwigTemplateForm/prestashop_ui_kit_base.html.twig' %}
 
@@ -53,13 +60,20 @@
 
 {% block form_row -%}
   {% spaceless %}
-    <div class="{{ block('form_row_class') }}{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
-      {{ form_label(form) }}
-      <div class="{{ block('form_group_class') }}">
-        {{ form_widget(form) }}
-        {{ form_errors(form) }}
-      </div>
-    </div>
+        {# could be refactored better if we search id_state in block_prefixes and there's only one js-state class  #}
+        <div
+          class="
+            {{ block('form_row_class') }}
+            {% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}
+            {% if '_customer_address_id_state' in block_prefixes %} js-address-state-select {% endif %}
+            {% if '_supplier_id_state' in block_prefixes %} js-supplier-state {% endif %}"
+        >
+          {{ form_label(form) }}
+          <div class="{{ block('form_group_class') }}">
+            {{ form_widget(form) }}
+            {{ form_errors(form) }}
+          </div>
+        </div>
   {% endspaceless %}
 {%- endblock form_row %}
 
