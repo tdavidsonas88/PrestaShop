@@ -6,6 +6,7 @@ namespace Tests\Integration\Behaviour\Features\Context\Domain;
 
 use Behat\Gherkin\Node\TableNode;
 use PHPUnit\Framework\Assert;
+use PrestaShop\PrestaShop\Core\Domain\OrderMessage\Command\AddVIPOrderMessageCommand;
 use PrestaShop\PrestaShop\Core\Domain\OrderMessage\ValueObject\OrderMessageId;
 use Tests\Integration\Behaviour\Features\Context\SharedStorage;
 
@@ -21,12 +22,13 @@ class VIPOrderMessageContext extends AbstractDomainFeatureContext
     {
         $testCaseData = $table->getRowsHash();
 
+        $defaultLangId = $this->getContainer()->get('prestashop.adapter.legacy.configuration')->get('PS_LANG_DEFAULT');
         /** @var OrderMessageId $orderMessageId */
         $orderMessageId = $this->getCommandBus()->handle(
-            new AddOrderVIPMessageFromBackOfficeCommand(
-                $testCaseData['name'],
-                $testCaseData['message'],
-                $testCaseData['vip_message']
+            new AddVIPOrderMessageCommand(
+                [$defaultLangId => $testCaseData['name']],
+                [$defaultLangId => $testCaseData['message']],
+                [$defaultLangId => $testCaseData['vip message']]
             )
         );
 
