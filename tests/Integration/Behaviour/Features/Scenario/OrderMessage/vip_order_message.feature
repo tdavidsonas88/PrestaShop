@@ -9,9 +9,9 @@ Feature: VIP Order message
     When I add VIP message "bo_vip_message" with following details:
       | name                | message1       |
       | message             | bla bla bla    |
-      | vip not             | very important |
+      | vip message         | very important |
     Then VIP message "bo_vip_message" should have following details:
       | name                | message1       |
       | message             | bla bla bla    |
-      | vip not             | very important |
+      | vip message         | very important |
 
