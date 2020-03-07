@@ -150,6 +150,7 @@ default:
             contexts:
                 - Tests\Integration\Behaviour\Features\Context\CommonFeatureContext
                 - Tests\Integration\Behaviour\Features\Context\Domain\OrderMessageContext
+                - Tests\Integration\Behaviour\Features\Context\Domain\VIPOrderMessageContext
                 - Tests\Integration\Behaviour\Features\Context\OrderMessageContext
         misc:
             paths:
