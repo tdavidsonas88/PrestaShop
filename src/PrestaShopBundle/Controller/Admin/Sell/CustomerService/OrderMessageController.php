@@ -72,6 +72,11 @@ class OrderMessageController extends FrameworkBundleAdminController
                     'desc' => $this->trans('Add new order message', 'Admin.Orderscustomers.Feature'),
                     'icon' => 'add_circle_outline',
                 ],
+                'add vip' => [
+                    'href' => $this->generateUrl('admin_order_messages_create'),
+                    'desc' =>  $this->trans('Add new VIP order message', 'Admin.Orderscustomers.Feature'),
+                    'icon' => 'add_circle_outline',
+                ],
             ],
             'orderMessageGrid' => $this->presentGrid($grid),
         ]);
