@@ -31,6 +31,9 @@ class OrderMessageCore extends ObjectModel
     /** @var string message content */
     public $message;
 
+    /** @var string */
+    public $vip_message;
+
     /** @var string Object creation date */
     public $date_add;
 
@@ -47,6 +50,7 @@ class OrderMessageCore extends ObjectModel
             /* Lang fields */
             'name' => ['type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isGenericName', 'required' => true, 'size' => 128],
             'message' => ['type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isMessage', 'required' => true, 'size' => 1200],
+            'vip_message' => ['type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isMessage', 'required' => true, 'size' => 1200]
         ],
     ];
 
@@ -60,7 +64,7 @@ class OrderMessageCore extends ObjectModel
     public static function getOrderMessages($id_lang)
     {
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
-        SELECT om.id_order_message, oml.name, oml.message
+        SELECT om.id_order_message, oml.name, oml.message, oml.vip_message
         FROM ' . _DB_PREFIX_ . 'order_message om
         LEFT JOIN ' . _DB_PREFIX_ . 'order_message_lang oml ON (oml.id_order_message = om.id_order_message)
         WHERE oml.id_lang = ' . (int) $id_lang . '

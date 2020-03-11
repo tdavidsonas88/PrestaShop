@@ -44,7 +44,7 @@ class AddVIPOrderMessageCommand extends AddOrderMessageCommand
     private $localizedMessage;
 
     /**
-     * @var string
+     * @var string[]
      */
     private $vipOrderMessage;
 
@@ -87,9 +87,9 @@ class AddVIPOrderMessageCommand extends AddOrderMessageCommand
     }
 
     /**
-     * @return string
+     * @return string[]
      */
-    public function getVipOrderMessage(): string
+    public function getVipOrderMessage(): array
     {
         return $this->vipOrderMessage;
     }

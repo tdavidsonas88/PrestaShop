@@ -22,7 +22,10 @@ class VIPOrderMessageContext extends AbstractDomainFeatureContext
     {
         $testCaseData = $table->getRowsHash();
 
-        $defaultLangId = $this->getContainer()->get('prestashop.adapter.legacy.configuration')->get('PS_LANG_DEFAULT');
+        $defaultLangId = $this->getContainer()
+            ->get('prestashop.adapter.legacy.configuration')
+            ->get('PS_LANG_DEFAULT');
+
         /** @var OrderMessageId $orderMessageId */
         $orderMessageId = $this->getCommandBus()->handle(
             new AddVIPOrderMessageCommand(
