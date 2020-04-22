@@ -25,8 +25,8 @@
 
 <div class="text-{{ column.options.text_align }}">
   {# \d+ is 1 or more digits in a string  #}
-  {% set doesFieldContainDigits = record[column.options.field] matches '/^\\d+$/' %}
-  {% if doesFieldContainDigits %}
+  {% set contains_digit = constains_digit(record[column.options.field]) %}
+  {% if contains_digit %}
     {{ record[column.options.field] }}
   {% else %}
     <span class="badge badge-danger rounded">

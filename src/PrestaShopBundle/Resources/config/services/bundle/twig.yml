@@ -118,3 +118,8 @@ services:
       class: 'PrestaShopBundle\Twig\Extension\NumberExtension'
       tags:
         - { name: twig.extension }
+
+    prestashop.bundle.twig.extension.containsDigitExtension:
+      class: 'PrestaShopBundle\Twig\Extension\ContainsDigitExtension'
+      tags:
+        - { name: twig.extension }
